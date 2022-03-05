@@ -120,10 +120,6 @@ class _MyOtScreenState extends State<MyOtScreen> {
             ),
             Accordion(
               maxOpenSections: 2,
-              // headerTextStyle: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: 17,
-              //     fontWeight: FontWeight.bold),
               leftIcon: Icon(Icons.timelapse, color: Colors.white),
               children: [
                 AccordionSection(

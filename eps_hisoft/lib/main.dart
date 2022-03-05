@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:eps_hisoft/home.dart';
+import 'package:eps_hisoft/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -75,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // backgroundColor: Colors.black,
             child: ListView(
               children: [
-                HomeScreen(),
+                LoginScreen(),
                 Center(
                   heightFactor: 10,
                   child: Text(

@@ -64,6 +64,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
   List<Transaction> transactions = [
     Transaction(
         id: 't1', title: 'New Shoess', amount: 69.944444, date: DateTime.now()),
@@ -120,30 +121,78 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final appBar = AppBar(
+        title: Text(
+          'Personal expense',
+          style: Theme.of(context).textTheme.headline1,
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _startAddNewTransaction(context);
+            },
+            icon: Icon(Icons.add),
+          )
+        ]);
     // TODO: implement build
     print(DateTime.now().subtract(Duration(days: 7)));
     return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            'Personal expense',
-            style: Theme.of(context).textTheme.headline1,
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                _startAddNewTransaction(context);
-              },
-              icon: Icon(Icons.add),
-            )
-          ]),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(transactions),
-            // NewTransaction(_addNewTransaction),
-            TransactionList(_recentTransaction, _deleteTransaction),
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Show Chart'),
+                  Switch.adaptive(
+                      activeColor: Theme.of(context).accentColor,
+                      value: _showChart,
+                      onChanged: (bool) {
+                        setState(() {
+                          _showChart = bool;
+                        });
+                      })
+                ],
+              ),
+            if (isLandscape)
+              _showChart
+                  ? Container(
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height) *
+                          0.7,
+                      child: Chart(transactions),
+                    )
+                  : Container(
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height) *
+                          1,
+                      child: TransactionList(
+                          _recentTransaction, _deleteTransaction),
+                    ),
+            if (!isLandscape)
+              Column(
+                children: [
+                  Container(
+                    height:
+                        (mediaQuery.size.height - appBar.preferredSize.height) *
+                            0.3,
+                    child: Chart(transactions),
+                  ),
+                  Container(
+                    height:
+                        (mediaQuery.size.height - appBar.preferredSize.height) *
+                            0.7,
+                    child:
+                        TransactionList(_recentTransaction, _deleteTransaction),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
