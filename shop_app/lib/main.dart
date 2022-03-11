@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/models/product.dart';
+import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/products.dart';
+import 'package:shop_app/screens/cart_screen.dart';
+import 'package:shop_app/screens/product_detail.dart';
 import 'package:shop_app/screens/product_overview.dart';
 
 void main() {
@@ -11,15 +17,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        accentColor: Colors.deepOrange,
-        fontFamily: 'Lato',
-      ),
-      home: const ProductsOverview(),
-    );
+    return MultiProvider(
+        // cung cấp provider cần lấy ra thông tin tinn, giống kiểu store
+        providers: [
+          ChangeNotifierProvider.value(
+            value: Products(),
+          ),
+          ChangeNotifierProvider.value(
+            value: Cart(),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+            accentColor: Colors.deepOrange,
+            fontFamily: 'Lato',
+          ),
+          home: const ProductsOverview(),
+          routes: {
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+          },
+        ));
   }
 }
 

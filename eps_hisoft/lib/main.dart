@@ -1,8 +1,11 @@
 import 'dart:io';
-import 'package:eps_hisoft/home.dart';
-import 'package:eps_hisoft/login.dart';
+import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/screens/home.dart';
+import 'package:eps_hisoft/screens/landing.dart';
+import 'package:eps_hisoft/screens/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,87 +17,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        fontFamily: 'Quicksand',
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: AuthProvider(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          fontFamily: 'Quicksand',
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: Landing.routeName,
+        routes: {
+          // '/': (ctx) => LoginScreen(),
+          Landing.routeName: (ctx) => Landing(),
+          HomeScreen.routeName: (ctx) => HomeScreen(),
+          LoginScreen.routeName: (ctx) => LoginScreen(),
+        },
       ),
-      home: const MyHomePage(title: 'Trang chủ'),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text(widget.title),
-          )
-        : AppBar(
-            title: Text(widget.title),
-            centerTitle: true,
-          );
-    return Platform.isIOS
-        ? CupertinoPageScaffold(
-            // backgroundColor: Colors.black,
-            child: ListView(
-              children: [
-                LoginScreen(),
-                Center(
-                  heightFactor: 10,
-                  child: Text(
-                    '2022 © Hisoft Viet Nam',
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        color: Colors.black,
-                        fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-            navigationBar: appBar as ObstructingPreferredSizeWidget,
-          )
-        : Scaffold(
-            appBar: appBar as PreferredSizeWidget,
-            body: HomeScreen(),
-            // This trailing comma makes auto-formatting nicer for build methods.
-          );
   }
 }

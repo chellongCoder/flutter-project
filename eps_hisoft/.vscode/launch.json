@@ -25,7 +25,10 @@
 			"name": "iPhone",
 			"request": "launch",
 			"type": "dart",
-			"deviceId": "B6267FA2-6B87-4372-8A6B-650E8755E031"
+			"deviceId": "B6267FA2-6B87-4372-8A6B-650E8755E031",
+            "args": [
+                "--no-sound-null-safety"
+            ]
 		},
     ],
     "compounds": [

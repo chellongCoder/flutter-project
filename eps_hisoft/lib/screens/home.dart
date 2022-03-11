@@ -1,9 +1,10 @@
-import 'package:eps_hisoft/my_ot.dart';
-import 'package:eps_hisoft/my_plan.dart';
+import 'package:eps_hisoft/screens/my_ot.dart';
+import 'package:eps_hisoft/screens/my_plan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class HomeScreen extends StatelessWidget {
+  static final routeName = '/home';
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
