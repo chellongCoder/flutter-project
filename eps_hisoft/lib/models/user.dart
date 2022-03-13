@@ -48,12 +48,12 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] ?? '',
-      accessToken: map['accessToken'] ?? '',
-      email: map['email'] ?? '',
-      isReset: map['isReset'] ?? false,
-      role: map['role'] ?? '',
-      name: map['name'] ?? '',
+      id: map['data']['_id'] ?? '',
+      accessToken: map['data']['access_token'] ?? '',
+      email: map['data']['email'] ?? '',
+      isReset: map['data']['isReset'] ?? false,
+      role: map['data']['role'] ?? '',
+      name: map['data']['name'] ?? '',
     );
   }
 

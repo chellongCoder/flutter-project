@@ -12,6 +12,16 @@ class AuthProvider with ChangeNotifier {
   bool _isLogged = false;
   String _baseUrl = "https://api-eps.hisoft.com.vn/api";
   final LocalStorage _storage = new LocalStorage('todo_app');
+  String _authToken = '';
+
+  String get authToken {
+    return _authToken;
+  }
+
+  set setAuthToken(String token) {
+    _authToken = token;
+    notifyListeners();
+  }
 
   LocalStorage get storage {
     return _storage;
@@ -26,17 +36,16 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void saveAndRedirectToHome(bool value) {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setBool("isLogged", isLogged);
-    // Navigator.pushNamedAndRemoveUntil(
-    //   context,
-    //   HomeScreen.routeName,
-    //   ModalRoute.withName(HomeScreen.routeName),
-    // );
+  void saveAndRedirectToHome(bool value) async {
     print('$value');
     setIsLogged = value;
-    _storage.setItem("isLogged", 1);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', value);
+  }
+
+  void logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
   Future<ApiResponse> authenticateUser(String username, String password) async {
@@ -46,13 +55,19 @@ class AuthProvider with ChangeNotifier {
       var url = Uri.parse('${_baseUrl}/login');
 
       final response = await http.post(url, body: {
-        'username': username,
+        'email': username,
         'password': password,
       });
 
       switch (response.statusCode) {
         case 200:
-          _apiResponse.Data = User.fromJson(json.decode(response.body));
+          Map<String, dynamic> jsonDecode = json.decode(response.body);
+          _apiResponse.Data = User.fromMap(jsonDecode);
+          User user = User.fromMap(jsonDecode);
+          setAuthToken = user.accessToken;
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('authToken', user.accessToken);
+          notifyListeners();
           break;
         case 401:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));

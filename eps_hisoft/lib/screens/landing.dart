@@ -20,7 +20,7 @@ class Landing extends StatefulWidget {
 class _LandingState extends State<Landing> {
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  late Future<bool> _isLogged;
+  late bool _isLogged;
 
   @override
   void initState() {
@@ -31,18 +31,24 @@ class _LandingState extends State<Landing> {
 
   _loadUserInfo() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-
-    print('${auth.storage.toString()}');
-    final isLogged = auth.storage.getItem('isLogged');
-    print('add ${isLogged}');
-    final _timer = Timer(Duration(seconds: 2), () {
-      if (isLogged == null) {
-        Navigator.of(context).pushNamed(LoginScreen.routeName);
-      } else {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomeScreen.routeName, (route) => true);
-      }
-    });
+    final prefs = await SharedPreferences.getInstance();
+    final authToken = prefs.getString('authToken') ?? '';
+    print('${auth.storage.toString()} ${prefs.toString()}');
+    print('${authToken}');
+    auth.setAuthToken = authToken;
+    if (authToken == '') {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        LoginScreen.routeName,
+        ModalRoute.withName(LoginScreen.routeName),
+      );
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomeScreen.routeName,
+        ModalRoute.withName(HomeScreen.routeName),
+      );
+    }
   }
 
   @override
@@ -50,20 +56,21 @@ class _LandingState extends State<Landing> {
     final auth = Provider.of<AuthProvider>(context, listen: false);
 
     return FutureBuilder(
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          final isLogged = auth.storage.getItem('isLogged');
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        final isLogged = auth.storage.getItem('isLogged');
 
-          print('shot ${snapshot.data} $isLogged');
-          if (snapshot.data == null) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
+        if (snapshot.data == null) {
           return Center(
             child: CircularProgressIndicator(),
           );
-        },
-        future: auth.storage.ready);
+        }
+        print('shot ${snapshot.data} $isLogged');
+
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+      future: auth.storage.ready,
+    );
   }
 }

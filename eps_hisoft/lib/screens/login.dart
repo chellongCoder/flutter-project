@@ -83,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                     height: 15.0,
                   ),
                   Text(
-                    '${auth.isLogged.toString()}',
+                    '${auth.authToken.toString()}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -91,7 +91,8 @@ class LoginScreen extends StatelessWidget {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      auth.saveAndRedirectToHome(!auth.isLogged);
+                      auth.authenticateUser(
+                          'longnn@hisoft.com.vn', 'longvip98');
                     },
                     child: Padding(
                         padding: EdgeInsets.all(15.0), child: Text('LOGIN')),
