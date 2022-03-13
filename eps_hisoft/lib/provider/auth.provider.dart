@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthProvider with ChangeNotifier {
   bool _isLogged = false;
   String _baseUrl = "https://api-eps.hisoft.com.vn/api";
-  final LocalStorage _storage = new LocalStorage('todo_app');
   String _authToken = '';
 
   String get authToken {
@@ -23,10 +22,6 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  LocalStorage get storage {
-    return _storage;
-  }
-
   bool get isLogged {
     return _isLogged;
   }
@@ -36,20 +31,16 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void saveAndRedirectToHome(bool value) async {
-    print('$value');
-    setIsLogged = value;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLogged', value);
-  }
+  void saveAndRedirectToHome() async {}
 
   void logout() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    setAuthToken = '';
   }
 
   Future<ApiResponse> authenticateUser(String username, String password) async {
-    ApiResponse _apiResponse = new ApiResponse();
+    ApiResponse _apiResponse = ApiResponse();
 
     try {
       var url = Uri.parse('${_baseUrl}/login');

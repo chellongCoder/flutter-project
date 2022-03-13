@@ -33,7 +33,6 @@ class _LandingState extends State<Landing> {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     final authToken = prefs.getString('authToken') ?? '';
-    print('${auth.storage.toString()} ${prefs.toString()}');
     print('${authToken}');
     auth.setAuthToken = authToken;
     if (authToken == '') {
@@ -53,24 +52,6 @@ class _LandingState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-
-    return FutureBuilder(
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        final isLogged = auth.storage.getItem('isLogged');
-
-        if (snapshot.data == null) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        print('shot ${snapshot.data} $isLogged');
-
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-      future: auth.storage.ready,
-    );
+    return Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

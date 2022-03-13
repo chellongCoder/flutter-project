@@ -5,7 +5,7 @@ class ApiResponse {
   // its own object. For example user.
   late Object _data;
   // _apiError will hold the error object
-  late Object _apiError;
+  Object? _apiError;
 
   Object get Data => _data;
   set Data(Object data) => _data = data;

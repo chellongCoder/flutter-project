@@ -1,14 +1,47 @@
 import 'dart:io';
 
+import 'package:eps_hisoft/provider/api.provider.dart';
 import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/screens/home.dart';
+import 'package:eps_hisoft/widget/loading_global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static final routeName = '/login';
   const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool isLoading = false;
+
+  void _handleSubmitted(BuildContext context) async {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+
+    setState(() {
+      isLoading = true;
+    });
+    ApiResponse _apiResponse =
+        await auth.authenticateUser('longnn@hisoft.com.vn', 'longvip98');
+    print(_apiResponse.ApiError.toString());
+    if ((_apiResponse.ApiError as ApiError) == null) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomeScreen.routeName,
+        ModalRoute.withName(HomeScreen.routeName),
+      );
+    } else {
+      // showInSnackBar((_apiResponse.ApiError as ApiError).error);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +123,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   RaisedButton(
-                    onPressed: () {
-                      auth.authenticateUser(
-                          'longnn@hisoft.com.vn', 'longvip98');
-                    },
+                    onPressed: () => _handleSubmitted(context),
                     child: Padding(
                         padding: EdgeInsets.all(15.0), child: Text('LOGIN')),
                     color: Colors.redAccent,
@@ -161,6 +191,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
+          if (isLoading) LoadingGlobal(),
         ],
       ),
     );
