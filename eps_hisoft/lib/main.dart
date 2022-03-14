@@ -3,6 +3,8 @@ import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/screens/home.dart';
 import 'package:eps_hisoft/screens/landing.dart';
 import 'package:eps_hisoft/screens/login.dart';
+import 'package:eps_hisoft/screens/my_ot.dart';
+import 'package:eps_hisoft/screens/my_plan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
           Landing.routeName: (ctx) => Landing(),
           HomeScreen.routeName: (ctx) => HomeScreen(),
           LoginScreen.routeName: (ctx) => LoginScreen(),
+          MyOtScreen.routeName: (ctx) => MyOtScreen(),
+          MyPlanScreen.routeName: (ctx) => MyPlanScreen(),
         },
       ),
     );

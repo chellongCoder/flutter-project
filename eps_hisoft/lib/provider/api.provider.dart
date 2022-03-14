@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+class ApiBase {
+  static final String baseUrl = "https://api-eps.hisoft.com.vn/api";
+}
+
 class ApiResponse {
   // _data will hold any response converted into
   // its own object. For example user.

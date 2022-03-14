@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyOtScreen extends StatefulWidget {
+  static final routeName = '/my-ot';
+
   const MyOtScreen({Key? key}) : super(key: key);
 
   @override
