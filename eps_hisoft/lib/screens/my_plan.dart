@@ -1,38 +1,103 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
+import 'package:eps_hisoft/models/OT.dart';
+import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/provider/ot.provider.dart';
+import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/utils/helper.dart';
-import 'package:eps_hisoft/widget/month_cell_decoration.dart';
+import 'package:eps_hisoft/widget/my_calendar.dart';
+import 'package:eps_hisoft/widget/task_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 DateRangePickerController _controller = DateRangePickerController();
 
-class MyPlanScreen extends StatelessWidget {
+class MyPlanScreen extends StatefulWidget {
   static final routeName = '/my-ot';
 
   const MyPlanScreen({Key? key}) : super(key: key);
-  List<DateTime> _getSpecialDates() {
-    final List<DateTime> dates = <DateTime>[];
-    final DateTime startDate =
-        DateTime.now().subtract(const Duration(days: 200));
-    final DateTime endDate = DateTime.now().add(const Duration(days: 500));
-    final Random random = Random();
-    for (DateTime date = startDate;
-        date.isBefore(endDate);
-        date = date.add(const Duration(days: 25))) {
-      for (int i = 0; i < 3; i++) {
-        dates.add(date.add(Duration(days: random.nextInt(i + 4))));
-      }
-    }
 
-    return dates;
+  @override
+  State<MyPlanScreen> createState() => _MyPlanScreenState();
+}
+
+class _MyPlanScreenState extends State<MyPlanScreen> {
+  bool isShowDetail = false;
+  List<DateTime> ots = [];
+  List<Widget> _children = [];
+
+  void selectDate(DateTime time) {
+    final otModel = Provider.of<OtProvider>(context, listen: false);
+
+    print(ots.toString() +
+        " " +
+        ots.contains(time).toString() +
+        " " +
+        time.toString());
+
+    List<OT> otWithTimes = otModel.ots.where((ot) {
+      DateTime otTime = Helper.formatToDate(ot.from);
+
+      if (otTime.day == time.day &&
+          otTime.month == time.month &&
+          otTime.year == time.year) {
+        return true;
+      }
+      return false;
+    }).toList();
+
+    AppLog.d(otWithTimes.toString(), tag: 'otWithTime');
+    setState(() {
+      // The key here allows Flutter to reuse the underlying render
+      // objects even if the children list is recreated.
+      isShowDetail = true;
+      _children = otWithTimes.map((ot) {
+        return TaskInfo(
+          projectName: ot.project,
+          type: 'OT',
+          timeFrom: ot.from,
+          timeTo: ot.to,
+          note: ot.note,
+        );
+      }).toList();
+    });
+  }
+
+  void getListOts() async {
+    final otModel = Provider.of<OtProvider>(context, listen: false);
+    final authModel = Provider.of<AuthProvider>(context, listen: false);
+    final String bearerToken = authModel.authToken;
+    AppLog.d(otModel.ots.toString(), tag: "GET LIST OT");
+    await otModel.getListOT(Helper.getDateStringFirstMonth(),
+        Helper.getDateStringLastMonth(), bearerToken);
+    AppLog.d(otModel.ots.toString(), tag: "GET LIST OT");
+
+    List<DateTime> _ots =
+        otModel.ots.map((e) => Helper.formatToDate(e.from)).toList();
+
+    AppLog.d(_ots.toString(), tag: "LIST DATE OT");
+
+    setState(() {
+      ots = _ots;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _children = [];
+    print(Helper.getDateStringWithDash(DateTime.now()));
+    print(Helper.getDateStringFirstMonth());
+    print(Helper.getDateStringLastMonth());
+    getListOts();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<DateTime> specialDates = _getSpecialDates();
-
     final appBar = Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Lịch của tôi'),
@@ -41,112 +106,33 @@ class MyPlanScreen extends StatelessWidget {
             title: Text('Lịch của tôi'),
             centerTitle: true,
           );
-    final Color monthCellBackground =
-        Helper().isDark ? const Color(0xFF232731) : const Color(0xfff7f4ff);
-    final Color indicatorColor =
-        Helper().isDark ? const Color(0xFF5CFFB7) : const Color(0xFF1AC4C7);
-    final Color highlightColor =
-        Helper().isDark ? const Color(0xFF5CFFB7) : Colors.deepPurpleAccent;
-    final Color cellTextColor =
-        Helper().isDark ? const Color(0xFFDFD4FF) : const Color(0xFF130438);
+
     return Scaffold(
       appBar: appBar as PreferredSizeWidget,
       body: Center(
         child: ListView(
           children: [
-            GestureDetector(
-              child: SfDateRangePicker(
-                onSelectionChanged:
-                    (DateRangePickerSelectionChangedArgs args) {},
-                // selectionMode: DateRangePickerSelectionMode.multiple,
-
-                monthViewSettings: DateRangePickerMonthViewSettings(
-                  firstDayOfWeek: 1,
-                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                      textStyle: TextStyle(
-                          fontSize: 10,
-                          color: const Color(0xFF130438),
-                          fontWeight: FontWeight.w600)),
-                  dayFormat: 'EEE',
-                  showTrailingAndLeadingDates: false,
-                  specialDates: specialDates,
-                ),
-                monthCellStyle: DateRangePickerMonthCellStyle(
-                    cellDecoration: MonthCellDecoration(
-                        borderColor: null,
-                        backgroundColor: monthCellBackground,
-                        showIndicator: false,
-                        indicatorColor: indicatorColor),
-                    todayCellDecoration: MonthCellDecoration(
-                        borderColor: highlightColor,
-                        backgroundColor: monthCellBackground,
-                        showIndicator: false,
-                        indicatorColor: indicatorColor),
-                    specialDatesDecoration: MonthCellDecoration(
-                        borderColor: null,
-                        backgroundColor: monthCellBackground,
-                        showIndicator: true,
-                        indicatorColor: indicatorColor),
-                    disabledDatesTextStyle: TextStyle(
-                      color: Helper().isDark
-                          ? const Color(0xFF666479)
-                          : const Color(0xffe2d7fe),
-                    ),
-                    weekendTextStyle: TextStyle(
-                      color: highlightColor,
-                    ),
-                    textStyle: TextStyle(color: cellTextColor, fontSize: 14),
-                    specialDatesTextStyle:
-                        TextStyle(color: cellTextColor, fontSize: 14),
-                    todayTextStyle:
-                        TextStyle(color: highlightColor, fontSize: 14)),
-                yearCellStyle: DateRangePickerYearCellStyle(
-                  todayTextStyle:
-                      TextStyle(color: highlightColor, fontSize: 14),
-                  textStyle: TextStyle(color: cellTextColor, fontSize: 14),
-                  disabledDatesTextStyle: TextStyle(
-                      color: Helper().isDark
-                          ? const Color(0xFF666479)
-                          : const Color(0xffe2d7fe)),
-                  leadingDatesTextStyle: TextStyle(
-                      color: cellTextColor.withOpacity(0.5), fontSize: 14),
-                ),
-                // cellBuilder: (BuildContext context,
-                //     DateRangePickerCellDetails cellDetails) {
-                //   return Container(
-                //     width: cellDetails.bounds.width,
-                //     height: cellDetails.bounds.height,
-                //     alignment: Alignment.center,
-                //     child: Column(
-                //       children: [
-                //         Text(
-                //           (cellDetails.date.day.toString()),
-                //         ),
-                //         Container(
-                //           decoration: BoxDecoration(
-                //               color: Colors.red,
-                //               borderRadius: BorderRadius.all(
-                //                 Radius.circular(10),
-                //               )),
-                //           width: 10,
-                //           height: 10,
-                //         )
-                //       ],
-                //     ),
-                //   );
-                // },
-                selectionColor: Colors.amberAccent,
-              ),
+            MyCalendar(
+              selectDate: selectDate,
+              ots: ots,
             ),
             Divider(
               color: Colors.black45,
               height: 1,
             ),
-            Expanded(
-              child: Text('data'),
-            )
+            if (isShowDetail)
+              Column(
+                children: List.of(_children),
+              ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(Icons.add),
       ),
     );
   }

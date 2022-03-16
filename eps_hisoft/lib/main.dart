@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/provider/ot.provider.dart';
 import 'package:eps_hisoft/screens/home.dart';
 import 'package:eps_hisoft/screens/landing.dart';
 import 'package:eps_hisoft/screens/login.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: AuthProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: OtProvider(),
         )
       ],
       child: MaterialApp(
