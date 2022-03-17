@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:eps_hisoft/provider/api.provider.dart';
 import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/screens/home.dart';
+import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/widget/loading_global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,15 +20,19 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
 
   void _handleSubmitted(BuildContext context) async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-
+    AppLog.d(usernameController.text + " " + passwordController.text,
+        tag: "TEXT");
+    final username = usernameController.text;
+    final password = passwordController.text;
     setState(() {
       isLoading = true;
     });
-    ApiResponse _apiResponse =
-        await auth.authenticateUser('longnn@hisoft.com.vn', 'longvip98');
+    ApiResponse _apiResponse = await auth.authenticateUser(username, password);
     print(_apiResponse.ApiError.toString());
     if ((_apiResponse.ApiError as ApiError) == null) {
       Navigator.pushNamedAndRemoveUntil(
@@ -36,7 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ModalRoute.withName(HomeScreen.routeName),
       );
     } else {
-      // showInSnackBar((_apiResponse.ApiError as ApiError).error);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text((_apiResponse.ApiError as ApiError).error),
+        backgroundColor: Colors.red,
+      ));
     }
     setState(() {
       isLoading = false;
@@ -82,20 +90,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20.0,
                   ),
                   TextFormField(
+                    style: TextStyle(color: Colors.white),
+                    controller: usernameController,
                     decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                        ),
-                        hintStyle: TextStyle(color: Colors.white),
-                        filled: true,
-                        fillColor: Colors.black45,
-                        hintText: 'Username'),
+                      prefixIcon: Icon(
+                        Icons.person,
+                        color: Colors.white,
+                      ),
+                      hintStyle: TextStyle(color: Colors.white),
+                      filled: true,
+                      fillColor: Colors.black45,
+                      hintText: 'Username',
+                    ),
+                    validator: (String? value) {
+                      if (value == null) {
+                        return 'Password is required';
+                      }
+                      return '';
+                    },
                   ),
                   SizedBox(
                     height: 10.0,
                   ),
                   TextFormField(
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    style: TextStyle(color: Colors.white),
+                    controller: passwordController,
                     decoration: InputDecoration(
                         filled: true,
                         prefixIcon: Icon(Icons.lock, color: Colors.white),

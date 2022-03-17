@@ -53,12 +53,17 @@ class AuthProvider with ChangeNotifier {
       switch (response.statusCode) {
         case 200:
           Map<String, dynamic> jsonDecode = json.decode(response.body);
-          _apiResponse.Data = User.fromMap(jsonDecode);
-          User user = User.fromMap(jsonDecode);
-          setAuthToken = user.accessToken;
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setString('authToken', user.accessToken);
-          notifyListeners();
+          int status = jsonDecode['status'];
+          if (status == 200) {
+            _apiResponse.Data = User.fromMap(jsonDecode);
+            User user = User.fromMap(jsonDecode);
+            setAuthToken = user.accessToken;
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setString('authToken', user.accessToken);
+            notifyListeners();
+          } else {
+            _apiResponse.ApiError = ApiError(error: jsonDecode['message']);
+          }
           break;
         case 401:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
