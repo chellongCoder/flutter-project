@@ -17,6 +17,11 @@ class Helper {
     return inputFormat.format(date);
   }
 
+  static String formatDateToStringNoHour(DateTime date) {
+    var inputFormat = DateFormat('dd/MM/yyyy');
+    return inputFormat.format(date);
+  }
+
   static String getDateStringWithDash(DateTime date) {
     var inputFormat = DateFormat('yyyy-MM-dd');
     return inputFormat.format(date);
@@ -32,5 +37,16 @@ class Helper {
     var inputFormat = DateFormat('yyyy-MM-dd');
     return inputFormat
         .format(DateTime(DateTime.now().year, DateTime.now().month + 1, 0));
+  }
+
+  static String getTextTime(TimeOfDay time) {
+    if (time == null) {
+      return 'Select Time';
+    } else {
+      final hours = time.hour.toString().padLeft(2, '0');
+      final minutes = time.minute.toString().padLeft(2, '0');
+
+      return '$hours:$minutes';
+    }
   }
 }

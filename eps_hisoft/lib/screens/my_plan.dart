@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 import 'package:eps_hisoft/models/OT.dart';
+import 'package:eps_hisoft/models/project.dart';
 import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/provider/ot.provider.dart';
+import 'package:eps_hisoft/provider/project.provider.dart';
+import 'package:eps_hisoft/screens/new_ot.dart';
 import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/utils/helper.dart';
 import 'package:eps_hisoft/widget/my_calendar.dart';
@@ -31,6 +34,7 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
 
   void selectDate(DateTime time) {
     final otModel = Provider.of<OtProvider>(context, listen: false);
+    final projectModel = Provider.of<ProjectProvider>(context, listen: false);
 
     print(ots.toString() +
         " " +
@@ -55,8 +59,11 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
       // objects even if the children list is recreated.
       isShowDetail = true;
       _children = otWithTimes.map((ot) {
+        Project project = projectModel.projects
+            .firstWhere((element) => element.id == ot.project);
+
         return TaskInfo(
-          projectName: ot.project,
+          projectName: project.name,
           type: 'OT',
           timeFrom: ot.from,
           timeTo: ot.to,
@@ -83,6 +90,10 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     setState(() {
       ots = _ots;
     });
+  }
+
+  void addNewOt() {
+    Navigator.of(context).pushNamed(NewOTScreen.routeName);
   }
 
   @override
@@ -128,9 +139,7 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
+        onPressed: addNewOt,
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
       ),

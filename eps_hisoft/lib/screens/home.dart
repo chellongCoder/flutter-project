@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/provider/project.provider.dart';
 import 'package:eps_hisoft/screens/login.dart';
 import 'package:eps_hisoft/screens/my_ot.dart';
 import 'package:eps_hisoft/screens/my_plan.dart';
@@ -8,9 +9,59 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static final routeName = '/home';
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  void getProjects() async {
+    final projectModel = Provider.of<ProjectProvider>(context, listen: false);
+    final authModel = Provider.of<AuthProvider>(context, listen: false);
+
+    await projectModel.getListProjects(authModel.authToken);
+  }
+
+  void onLogout(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Thông báo'),
+        message: const Text('Bạn có chắc muốn đăng xuất?'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: const Text('Đồng ý'),
+            onPressed: () {
+              auth.logout();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                LoginScreen.routeName,
+                ModalRoute.withName(LoginScreen.routeName),
+              );
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: const Text(
+              'Hủy',
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () {},
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getProjects();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,14 +165,7 @@ class HomeScreen extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   child: InkWell(
-                    onTap: () {
-                      auth.logout();
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        LoginScreen.routeName,
-                        ModalRoute.withName(LoginScreen.routeName),
-                      );
-                    },
+                    onTap: () => onLogout(context),
                     child: Text(
                       'logout',
                       style: TextStyle(
