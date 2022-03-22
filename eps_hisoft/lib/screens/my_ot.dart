@@ -91,6 +91,8 @@ class _MyOtScreenState extends State<MyOtScreen> {
       appBar: appBar as PreferredSizeWidget,
       body: Center(
         child: ListView(
+          shrinkWrap: true, //just set this property
+
           children: [
             Text('Thời gian', style: Theme.of(context).textTheme.headline5),
             SizedBox(
@@ -136,6 +138,7 @@ class _MyOtScreenState extends State<MyOtScreen> {
                     ),
             ),
             Accordion(
+              disableScrolling: true,
               maxOpenSections: 2,
               leftIcon: Icon(Icons.timelapse, color: Colors.white),
               children: otModel.ots
