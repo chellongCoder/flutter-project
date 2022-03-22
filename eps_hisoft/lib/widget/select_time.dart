@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class SelectTime extends StatefulWidget {
   final SelectTimeController? controller;
+  final String? label;
 
-  const SelectTime({Key? key, this.controller}) : super(key: key);
+  const SelectTime({Key? key, this.controller, this.label}) : super(key: key);
 
   @override
   State<SelectTime> createState() => _SelectTimeState();
@@ -36,7 +37,7 @@ class _SelectTimeState extends State<SelectTime> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Giờ'),
+        if (widget.label != null) Text(widget.label ?? '') else Text('Giờ'),
         SizedBox(
           height: 10,
         ),

@@ -2,10 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 import 'package:eps_hisoft/models/OT.dart';
+import 'package:eps_hisoft/models/onsite.dart';
 import 'package:eps_hisoft/models/project.dart';
 import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/provider/onsite.provider.dart';
 import 'package:eps_hisoft/provider/ot.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
+import 'package:eps_hisoft/screens/new_onsite.dart';
 import 'package:eps_hisoft/screens/new_ot.dart';
 import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/utils/helper.dart';
@@ -36,6 +39,8 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
 
   void selectDate(DateTime time) {
     final otModel = Provider.of<OtProvider>(context, listen: false);
+    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
+
     final projectModel = Provider.of<ProjectProvider>(context, listen: false);
 
     print(ots.toString() +
@@ -55,12 +60,24 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
       return false;
     }).toList();
 
-    AppLog.d(otWithTimes.toString(), tag: 'otWithTime');
+    List<Onsite> onsitesWithTimes = onsiteModel.onsites.where((ot) {
+      DateTime otTime = Helper.formatToDate(ot.from);
+
+      if (otTime.day == time.day &&
+          otTime.month == time.month &&
+          otTime.year == time.year) {
+        return true;
+      }
+      return false;
+    }).toList();
+
+    AppLog.d(onsitesWithTimes.toString(), tag: 'otWithTime');
     setState(() {
       // The key here allows Flutter to reuse the underlying render
       // objects even if the children list is recreated.
       isShowDetail = true;
-      _children = otWithTimes.map((ot) {
+      // lấy list ot trong ngày được kichs vào
+      final _ots = otWithTimes.map((ot) {
         Project project = projectModel.projects
             .firstWhere((element) => element.id == ot.project);
 
@@ -72,6 +89,21 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
           note: ot.note,
         );
       }).toList();
+      // lấy list onsite trong ngày được kichs vào
+      final _onsite = onsitesWithTimes.map((ot) {
+        Project project = projectModel.projects
+            .firstWhere((element) => element.id == ot.project);
+
+        return TaskInfo(
+          projectName: project.name,
+          type: 'ONSITE',
+          timeFrom: ot.from,
+          timeTo: ot.to,
+          note: ot.note,
+        );
+      }).toList();
+
+      _children = [..._ots, ..._onsite];
     });
   }
 
@@ -84,8 +116,9 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
         Helper.getDateStringLastMonth(), bearerToken);
     AppLog.d(otModel.ots.toString(), tag: "GET LIST OT");
 
-    List<DateTime> _ots =
-        otModel.ots.map((e) => Helper.formatToDate(e.from)).toList();
+    List<DateTime> _ots = otModel.ots
+        .map((e) => Helper.formatStringToDateNoHour(e.from))
+        .toList();
 
     AppLog.d(_ots.toString(), tag: "LIST DATE OT");
 
@@ -94,8 +127,21 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     });
   }
 
+  void getListOnsite() async {
+    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
+    final authModel = Provider.of<AuthProvider>(context, listen: false);
+    final String bearerToken = authModel.authToken;
+
+    await onsiteModel.getListOnsite(Helper.getDateStringFirstMonth(),
+        Helper.getDateStringLastMonth(), bearerToken);
+  }
+
   void addNewOt() {
     Navigator.of(context).pushNamed(NewOTScreen.routeName);
+  }
+
+  void addNewOnsite() {
+    Navigator.of(context).pushNamed(NewOnsiteScreen.routeName);
   }
 
   @override
@@ -107,10 +153,13 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     print(Helper.getDateStringFirstMonth());
     print(Helper.getDateStringLastMonth());
     getListOts();
+    getListOnsite();
   }
 
   @override
   Widget build(BuildContext context) {
+    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
+
     final appBar = Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Lịch của tôi'),
@@ -157,11 +206,10 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
             onTap: addNewOt,
           ),
           SpeedDialChild(
-              child: Icon(Icons.laptop_mac),
-              label: 'Onsite',
-              onTap: () {
-                print('Mail Tapped');
-              }),
+            child: Icon(Icons.laptop_mac),
+            label: 'Onsite',
+            onTap: addNewOnsite,
+          ),
           // SpeedDialChild(
           //     child: Icon(Icons.copy),
           //     label: 'Copy',

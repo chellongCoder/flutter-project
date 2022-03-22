@@ -152,16 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     textColor: Colors.white,
                   ),
                   SizedBox(
-                    height: 10.0,
-                  ),
-                  RaisedButton(
-                    onPressed: () {},
-                    child: Padding(
-                        padding: EdgeInsets.all(15.0), child: Text('REGISTER')),
-                    color: Colors.grey,
-                    textColor: Colors.white,
-                  ),
-                  SizedBox(
                     height: 12.0,
                   ),
                   Row(

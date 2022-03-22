@@ -12,6 +12,11 @@ class Helper {
     return inputFormat.format(date) + "Z";
   }
 
+  static DateTime formatTimeZoneToDate(String dateString) {
+    var inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
+    return inputFormat.parse(dateString);
+  }
+
   static DateTime formatToDate(String dateString) {
     var inputFormat = DateFormat('dd/MM/yyyy HH:mm');
     return inputFormat.parse(dateString);
@@ -25,6 +30,11 @@ class Helper {
   static String formatDateToStringNoHour(DateTime date) {
     var inputFormat = DateFormat('dd/MM/yyyy');
     return inputFormat.format(date);
+  }
+
+  static DateTime formatStringToDateNoHour(String dateString) {
+    var inputFormat = DateFormat('dd/MM/yyyy');
+    return inputFormat.parse(dateString);
   }
 
   static String getDateStringWithDash(DateTime date) {

@@ -2,13 +2,16 @@ import 'dart:io';
 import 'package:eps_hisoft/models/select_project.dart';
 import 'package:eps_hisoft/models/select_ship.dart';
 import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/provider/onsite.provider.dart';
 import 'package:eps_hisoft/provider/ot.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
 import 'package:eps_hisoft/screens/home.dart';
 import 'package:eps_hisoft/screens/landing.dart';
 import 'package:eps_hisoft/screens/login.dart';
+import 'package:eps_hisoft/screens/my_onsite.dart';
 import 'package:eps_hisoft/screens/my_ot.dart';
 import 'package:eps_hisoft/screens/my_plan.dart';
+import 'package:eps_hisoft/screens/new_onsite.dart';
 import 'package:eps_hisoft/screens/new_ot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +37,9 @@ class MyApp extends StatelessWidget {
           create: (_) => OtProvider(),
         ),
         ChangeNotifierProvider(
+          create: (_) => OnsiteProvider(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => ProjectProvider(),
         ),
         ChangeNotifierProvider(
@@ -52,6 +58,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
           ).copyWith(
             secondary: Colors.grey,
+            secondaryVariant: Colors.green,
           ),
         ),
         initialRoute: Landing.routeName,
@@ -63,6 +70,8 @@ class MyApp extends StatelessWidget {
           MyOtScreen.routeName: (ctx) => MyOtScreen(),
           MyPlanScreen.routeName: (ctx) => MyPlanScreen(),
           NewOTScreen.routeName: (ctx) => NewOTScreen(),
+          MyOnsiteScreen.routeName: (ctx) => MyOnsiteScreen(),
+          NewOnsiteScreen.routeName: (ctx) => NewOnsiteScreen(),
         },
       ),
     );

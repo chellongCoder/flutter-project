@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
 import 'package:eps_hisoft/screens/login.dart';
+import 'package:eps_hisoft/screens/my_onsite.dart';
 import 'package:eps_hisoft/screens/my_ot.dart';
 import 'package:eps_hisoft/screens/my_plan.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: GestureDetector(
                     onTap: () {
                       print('3');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MyOnsiteScreen()),
+                      );
                     },
                     child: Card(
                       child: Container(

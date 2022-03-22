@@ -1,5 +1,6 @@
 import 'package:eps_hisoft/models/select_date.dart';
 import 'package:eps_hisoft/models/ship.dart';
+import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/utils/helper.dart';
 import 'package:flutter/material.dart';
 
@@ -29,11 +30,18 @@ class _SelectDateState extends State<SelectDate> {
   _SelectDateState(this._selectedDate);
 
   void _presentDatePicker() {
+    _selectedDate ??= DateTime.now();
     showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _selectedDate!.isBefore(
+        DateTime.now(),
+      ) //nếu date truyền vào lớn hơn ngày hiện tại
+          ? DateTime.now()
+          : _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2019),
-      lastDate: DateTime.now(),
+      lastDate: _selectedDate!.isAfter(DateTime.now())
+          ? _selectedDate ?? DateTime.now()
+          : DateTime.now(),
     ).then((value) {
       setState(() {
         _selectedDate = value ?? _selectedDate;
@@ -80,7 +88,8 @@ class _SelectDateState extends State<SelectDate> {
                   Text(
                     'Chọn ngày',
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                   ),
                 SizedBox(
                   width: 10,

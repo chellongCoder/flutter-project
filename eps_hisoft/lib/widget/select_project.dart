@@ -79,7 +79,7 @@ class _SelectProjectState extends State<SelectProject> {
                         padding: const EdgeInsets.only(left: 8.0),
                         child: _selectedItem == -1
                             ? Text(
-                                'Select',
+                                'Chọn dự án',
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .colorScheme
