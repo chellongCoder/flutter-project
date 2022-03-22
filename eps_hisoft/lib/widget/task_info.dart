@@ -48,6 +48,9 @@ class TaskInfo extends StatelessWidget {
               Text('$projectName', style: Theme.of(context).textTheme.bodyText1)
             ],
           ),
+          SizedBox(
+            height: 10,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,13 +58,20 @@ class TaskInfo extends StatelessWidget {
               Text('$timeFrom ~ $timeTo')
             ],
           ),
+          SizedBox(
+            height: 10,
+          ),
           Row(
-            // crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Note: ', style: Theme.of(context).textTheme.caption),
               Text('$note', style: Theme.of(context).textTheme.headline6)
             ],
-          )
+          ),
+          Divider(
+            color: Colors.black45,
+            height: 1,
+          ),
         ],
       ),
     );

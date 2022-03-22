@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TextArea extends StatelessWidget {
-  const TextArea({Key? key}) : super(key: key);
+  TextEditingController? textController;
+
+  TextArea({
+    Key? key,
+    this.textController,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +28,7 @@ class TextArea extends StatelessWidget {
           ),
           child: TextField(
             keyboardType: TextInputType.multiline,
+            controller: textController,
             minLines: 5,
             maxLines: 7,
             decoration: InputDecoration(

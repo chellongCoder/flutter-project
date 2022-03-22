@@ -1,16 +1,20 @@
+import 'package:eps_hisoft/models/select_time.dart';
 import 'package:eps_hisoft/models/ship.dart';
+import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/utils/helper.dart';
 import 'package:flutter/material.dart';
 
 class SelectTime extends StatefulWidget {
-  const SelectTime({Key? key}) : super(key: key);
+  final SelectTimeController? controller;
+
+  const SelectTime({Key? key, this.controller}) : super(key: key);
 
   @override
   State<SelectTime> createState() => _SelectTimeState();
 }
 
 class _SelectTimeState extends State<SelectTime> {
-  TimeOfDay _time = TimeOfDay.now();
+  TimeOfDay? _time;
 
   void _presentDatePicker() {
     final initialTime =
@@ -18,10 +22,11 @@ class _SelectTimeState extends State<SelectTime> {
 
     showTimePicker(
       context: context,
-      initialTime: _time,
+      initialTime: _time ?? TimeOfDay.now(),
     ).then((value) {
+      widget.controller?.setValue(value);
       setState(() {
-        _time = value ?? initialTime;
+        _time = value;
       });
     });
   }
@@ -38,7 +43,7 @@ class _SelectTimeState extends State<SelectTime> {
         InkWell(
           onTap: _presentDatePicker,
           child: Container(
-            width: 100,
+            width: 150,
             decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).primaryColor),
               borderRadius: BorderRadius.all(
@@ -49,11 +54,16 @@ class _SelectTimeState extends State<SelectTime> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  Helper.getTextTime(_time),
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
+                if (_time != null)
+                  Text(
+                    Helper.getTextTime(_time!),
+                  )
+                else
+                  Text(
+                    'Chọn giờ',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 SizedBox(
                   width: 10,
                 ),

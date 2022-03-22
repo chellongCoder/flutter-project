@@ -9,8 +9,8 @@ class Project {
   final String start;
   final String state;
   final String end;
-  final String createAt;
-  final String updateAt;
+  final String createdAt;
+  final String updatedAt;
 
   Project({
     required this.id,
@@ -19,8 +19,8 @@ class Project {
     required this.start,
     required this.state,
     required this.end,
-    required this.createAt,
-    required this.updateAt,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   Project copyWith({
@@ -30,8 +30,8 @@ class Project {
     String? start,
     String? state,
     String? end,
-    String? createAt,
-    String? updateAt,
+    String? createdAt,
+    String? updatedAt,
   }) {
     return Project(
       id: id ?? this.id,
@@ -40,8 +40,8 @@ class Project {
       start: start ?? this.start,
       state: state ?? this.state,
       end: end ?? this.end,
-      createAt: createAt ?? this.createAt,
-      updateAt: updateAt ?? this.updateAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -53,8 +53,8 @@ class Project {
       'start': start,
       'state': state,
       'end': end,
-      'createAt': createAt,
-      'updateAt': updateAt,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
@@ -66,8 +66,8 @@ class Project {
       start: map['start'] ?? '',
       state: map['state'] ?? '',
       end: map['end'] ?? '',
-      createAt: map['createAt'] ?? '',
-      updateAt: map['updateAt'] ?? '',
+      createdAt: map['createdAt'] ?? '',
+      updatedAt: map['updatedAt'] ?? '',
     );
   }
 
@@ -78,7 +78,7 @@ class Project {
 
   @override
   String toString() {
-    return 'Project(id: $id, name: $name, members: $members, start: $start, state: $state, end: $end, createAt: $createAt, updateAt: $updateAt)';
+    return 'Project(id: $id, name: $name, members: $members, start: $start, state: $state, end: $end, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -92,8 +92,8 @@ class Project {
         other.start == start &&
         other.state == state &&
         other.end == end &&
-        other.createAt == createAt &&
-        other.updateAt == updateAt;
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
   }
 
   @override
@@ -104,7 +104,7 @@ class Project {
         start.hashCode ^
         state.hashCode ^
         end.hashCode ^
-        createAt.hashCode ^
-        updateAt.hashCode;
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

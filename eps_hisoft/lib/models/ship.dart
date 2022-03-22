@@ -1,1 +1,1 @@
-enum Ship { Morning, Afternoon, Evening, AllDay }
+enum Ship { SANG, CHIEU, TOI, CANGAY }

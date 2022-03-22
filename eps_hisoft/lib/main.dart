@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:eps_hisoft/models/select_project.dart';
+import 'package:eps_hisoft/models/select_ship.dart';
 import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/provider/ot.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
@@ -33,6 +35,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => ProjectProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SelectProjectController(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SelectShipController(),
         ),
       ],
       child: MaterialApp(

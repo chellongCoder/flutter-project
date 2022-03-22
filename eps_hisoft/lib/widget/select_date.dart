@@ -20,25 +20,25 @@ class SelectDate extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<SelectDate> createState() => _SelectDateState(date ?? DateTime.now());
+  State<SelectDate> createState() => _SelectDateState(date);
 }
 
 class _SelectDateState extends State<SelectDate> {
-  DateTime _selectedDate;
+  DateTime? _selectedDate;
 
   _SelectDateState(this._selectedDate);
 
   void _presentDatePicker() {
     showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2019),
       lastDate: DateTime.now(),
     ).then((value) {
       setState(() {
         _selectedDate = value ?? _selectedDate;
-        widget.controller?.setValue(value);
       });
+      widget.controller?.setValue(value);
     });
   }
 
@@ -72,9 +72,16 @@ class _SelectDateState extends State<SelectDate> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  Helper.formatDateToStringNoHour(_selectedDate),
-                ),
+                if (_selectedDate != null)
+                  Text(
+                    Helper.formatDateToStringNoHour(_selectedDate!),
+                  )
+                else
+                  Text(
+                    'Chọn ngày',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 SizedBox(
                   width: 10,
                 ),

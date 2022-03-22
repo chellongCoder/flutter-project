@@ -1,11 +1,13 @@
 import 'package:eps_hisoft/models/project.dart';
+import 'package:eps_hisoft/models/select_ship.dart';
 import 'package:eps_hisoft/models/ship.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SelectShip extends StatefulWidget {
-  const SelectShip({Key? key}) : super(key: key);
+  SelectShipController? controller;
+  SelectShip({Key? key, this.controller}) : super(key: key);
 
   @override
   State<SelectShip> createState() => _SelectShipState();
@@ -37,6 +39,7 @@ class _SelectShipState extends State<SelectShip> {
                     setState(() {
                       _selectedItem = index;
                     });
+                    widget.controller?.setValue(Ship.values[index]);
                   },
                 );
               },
@@ -58,34 +61,84 @@ class _SelectShipState extends State<SelectShip> {
           SizedBox(
             height: 10,
           ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: _selectedItem == -1
-                      ? Text(
-                          'Select',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        )
-                      : Text(Ship.values[_selectedItem]
-                          .toString()
-                          .split(".")
-                          .last),
+          Consumer<SelectShipController>(builder: (ctx, selectShip, child) {
+            if (!selectShip.hasError) {
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: _selectedItem == -1
+                          ? Text(
+                              'Select',
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            )
+                          : Text(Ship.values[_selectedItem]
+                              .toString()
+                              .split(".")
+                              .last),
+                    ),
+                    Icon(Icons.arrow_drop_down),
+                  ],
                 ),
-                Icon(Icons.arrow_drop_down),
-              ],
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
-              borderRadius: BorderRadius.all(
-                Radius.circular(5),
-              ),
-            ),
-          )
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+              );
+            } else {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: _selectedItem == -1
+                              ? Text(
+                                  'Select',
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                )
+                              : Text(Ship.values[_selectedItem]
+                                  .toString()
+                                  .split(".")
+                                  .last),
+                        ),
+                        Icon(Icons.arrow_drop_down),
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Theme.of(context).colorScheme.error),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Ca không được để trống',
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
+                  )
+                ],
+              );
+            }
+          })
         ],
       ),
     );

@@ -13,6 +13,7 @@ import 'package:eps_hisoft/widget/my_calendar.dart';
 import 'package:eps_hisoft/widget/task_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -31,6 +32,7 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
   bool isShowDetail = false;
   List<DateTime> ots = [];
   List<Widget> _children = [];
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
   void selectDate(DateTime time) {
     final otModel = Provider.of<OtProvider>(context, listen: false);
@@ -138,10 +140,35 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: addNewOt,
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        openCloseDial: isDialOpen,
         backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(Icons.add),
+        overlayColor: Colors.grey,
+        overlayOpacity: 0.5,
+        spacing: 15,
+        spaceBetweenChildren: 15,
+        // closeManually: true,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.more_time),
+            label: 'OT',
+            backgroundColor: Colors.white,
+            onTap: addNewOt,
+          ),
+          SpeedDialChild(
+              child: Icon(Icons.laptop_mac),
+              label: 'Onsite',
+              onTap: () {
+                print('Mail Tapped');
+              }),
+          // SpeedDialChild(
+          //     child: Icon(Icons.copy),
+          //     label: 'Copy',
+          //     onTap: () {
+          //       print('Copy Tapped');
+          //     }),
+        ],
       ),
     );
   }

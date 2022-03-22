@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class ApiBase {
-  static final String baseUrl = "https://api-eps.hisoft.com.vn/api";
+  static final String baseUrl = "http://171.244.3.101:12003/api";
 }
 
 class ApiResponse {

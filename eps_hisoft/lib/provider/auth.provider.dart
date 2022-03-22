@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   bool _isLogged = false;
-  String _baseUrl = "https://api-eps.hisoft.com.vn/api";
   String _authToken = '';
 
   String get authToken {
@@ -43,7 +42,7 @@ class AuthProvider with ChangeNotifier {
     ApiResponse _apiResponse = ApiResponse();
 
     try {
-      var url = Uri.parse('${_baseUrl}/login');
+      var url = Uri.parse('${ApiBase.baseUrl}/login');
 
       final response = await http.post(url, body: {
         'email': username,
