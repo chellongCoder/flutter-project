@@ -1,11 +1,17 @@
 import 'dart:io';
 
 import 'package:accordion/accordion.dart';
+import 'package:eps_hisoft/models/onsite.dart';
 import 'package:eps_hisoft/models/select_date.dart';
+import 'package:eps_hisoft/provider/auth.provider.dart';
+import 'package:eps_hisoft/provider/onsite.provider.dart';
+import 'package:eps_hisoft/provider/project.provider.dart';
 import 'package:eps_hisoft/utils/app_log.dart';
+import 'package:eps_hisoft/utils/helper.dart';
 import 'package:eps_hisoft/widget/select_date.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyOnsiteScreen extends StatefulWidget {
   static final routeName = '/my-onsite';
@@ -19,6 +25,27 @@ class _MyOnsiteState extends State<MyOnsiteScreen> {
   final fromDateController = SelectDateController();
   final toDateController = SelectDateController();
 
+  void getListOnsites([DateTime? fromDate, DateTime? toDate]) async {
+    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
+    final authModel = Provider.of<AuthProvider>(context, listen: false);
+    final String bearerToken = authModel.authToken;
+
+    await onsiteModel.getListOnsite(
+      fromDate != null
+          ? Helper.getDateStringWithDash(fromDate)
+          : Helper.getDateStringFirstMonth(),
+      toDate != null
+          ? Helper.getDateStringWithDash(toDate)
+          : Helper.getDateStringLastMonth(),
+      bearerToken,
+    );
+
+    List<DateTime> _ots =
+        onsiteModel.onsites.map((e) => Helper.formatToDate(e.from)).toList();
+
+    AppLog.d(_ots.toString(), tag: "LIST DATE OT");
+  }
+
   void onSearch() {
     AppLog.d(
         fromDateController.date.toString() +
@@ -29,14 +56,24 @@ class _MyOnsiteState extends State<MyOnsiteScreen> {
     DateTime? fromDate = fromDateController.date;
     DateTime? toDate = toDateController.date;
 
-    // getListOts(
-    //   fromDate,
-    //   toDate,
-    // );
+    getListOnsites(
+      fromDate,
+      toDate,
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getListOnsites();
   }
 
   @override
   Widget build(BuildContext context) {
+    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: true);
+    final projectModel = Provider.of<ProjectProvider>(context, listen: false);
+
     final appBar = Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Đăng ký Onsite'),
@@ -94,77 +131,66 @@ class _MyOnsiteState extends State<MyOnsiteScreen> {
                     padding: EdgeInsets.all(20),
                   ),
           ),
-          // Accordion(
-          //   disableScrolling: true,
-          //   maxOpenSections: 2,
-          //   leftIcon: Icon(Icons.timelapse, color: Colors.white),
-          //   children: otModel.ots
-          //       .map(
-          //         (OT e) => AccordionSection(
-          //           isOpen: true,
-          //           header: Text(e.from,
-          //               style: TextStyle(color: Colors.white, fontSize: 17)),
-          //           content: Column(
-          //             children: [
-          //               Row(
-          //                 children: [
-          //                   Text('Dự án: '),
-          //                   Text(
-          //                     projectModel.projects
-          //                         .firstWhere(
-          //                             (element) => element.id == e.project)
-          //                         .name,
-          //                     style: TextStyle(fontWeight: FontWeight.bold),
-          //                   ),
-          //                 ],
-          //               ),
-          //               Row(
-          //                 children: [
-          //                   Text('Ca: '),
-          //                   Text(
-          //                     e.ship,
-          //                     style: TextStyle(fontWeight: FontWeight.bold),
-          //                   ),
-          //                 ],
-          //               ),
-          //               Row(
-          //                 children: [
-          //                   Text('Thời gian: '),
-          //                   Row(
-          //                     children: [
-          //                       Text(
-          //                         e.from,
-          //                         style:
-          //                             TextStyle(fontWeight: FontWeight.bold),
-          //                       ),
-          //                       Icon(Icons.arrow_right_alt),
-          //                       Text(
-          //                         e.to,
-          //                         style:
-          //                             TextStyle(fontWeight: FontWeight.bold),
-          //                       ),
-          //                     ],
-          //                   )
-          //                 ],
-          //               ),
-          //               Row(
-          //                 crossAxisAlignment: CrossAxisAlignment.center,
-          //                 children: [
-          //                   Text('Ghi chú: '),
-          //                   Flexible(
-          //                       child: Text(
-          //                     '${e.note}',
-          //                     maxLines: 3,
-          //                     style: Theme.of(context).textTheme.overline,
-          //                   )),
-          //                 ],
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       )
-          //       .toList(),
-          // ),
+          Accordion(
+            disableScrolling: true,
+            maxOpenSections: 2,
+            leftIcon: Icon(Icons.timelapse, color: Colors.white),
+            children: onsiteModel.onsites
+                .map(
+                  (Onsite e) => AccordionSection(
+                    isOpen: true,
+                    header: Text(e.from,
+                        style: TextStyle(color: Colors.white, fontSize: 17)),
+                    content: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text('Dự án: '),
+                            Text(
+                              projectModel.projects
+                                  .firstWhere(
+                                      (element) => element.id == e.project)
+                                  .name,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text('Thời gian: '),
+                            Row(
+                              children: [
+                                Text(
+                                  e.from,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Icon(Icons.arrow_right_alt),
+                                Text(
+                                  e.to,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Ghi chú: '),
+                            Flexible(
+                                child: Text(
+                              '${e.note}',
+                              maxLines: 3,
+                              style: Theme.of(context).textTheme.overline,
+                            )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
         ],
       ),
     );
