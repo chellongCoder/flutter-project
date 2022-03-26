@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:eps_hisoft/screens/home.dart';
+import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:http/http.dart' as http;
 import 'package:eps_hisoft/models/user.dart';
 import 'package:eps_hisoft/provider/api.provider.dart';
@@ -11,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthProvider with ChangeNotifier {
   bool _isLogged = false;
   String _authToken = '';
+  String _userId = '';
+  User? user;
 
   String get authToken {
     return _authToken;
@@ -19,6 +22,14 @@ class AuthProvider with ChangeNotifier {
   set setAuthToken(String token) {
     _authToken = token;
     notifyListeners();
+  }
+
+  String? get getUserId {
+    return _userId;
+  }
+
+  void set setUserId(String u) {
+    _userId = u;
   }
 
   bool get isLogged {
@@ -54,11 +65,50 @@ class AuthProvider with ChangeNotifier {
           Map<String, dynamic> jsonDecode = json.decode(response.body);
           int status = jsonDecode['status'];
           if (status == 200) {
-            _apiResponse.Data = User.fromMap(jsonDecode);
-            User user = User.fromMap(jsonDecode);
+            _apiResponse.Data = User.fromMap(jsonDecode['data']);
+            User user = User.fromMap(jsonDecode['data']);
+            setUserId = user.id;
             setAuthToken = user.accessToken;
             final prefs = await SharedPreferences.getInstance();
             prefs.setString('authToken', user.accessToken);
+            prefs.setString('userId', user.id);
+            notifyListeners();
+          } else {
+            _apiResponse.ApiError = ApiError(error: jsonDecode['message']);
+          }
+          break;
+        case 401:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+        default:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+      }
+    } on SocketException {
+      _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
+    }
+    return _apiResponse;
+  }
+
+  Future<ApiResponse> getUserApi(String userId, String bearerToken) async {
+    ApiResponse _apiResponse = ApiResponse();
+
+    try {
+      var url = Uri.parse('${ApiBase.baseUrl}/employees/detail/' + userId);
+      var header = {
+        'authorization': 'Bearer $bearerToken',
+      };
+      final response = await http.get(url, headers: header);
+
+      switch (response.statusCode) {
+        case 200:
+          Map<String, dynamic> jsonDecode = json.decode(response.body);
+          int status = jsonDecode['status'];
+          if (status == 200) {
+            _apiResponse.Data = User.fromMap(jsonDecode['data']);
+            User user = User.fromMap(jsonDecode['data']);
+            this.user = user;
+            AppLog.d(user.toString(), tag: 'user');
             notifyListeners();
           } else {
             _apiResponse.ApiError = ApiError(error: jsonDecode['message']);

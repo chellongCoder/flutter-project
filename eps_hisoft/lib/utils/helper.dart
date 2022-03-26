@@ -12,6 +12,11 @@ class Helper {
     return inputFormat.format(date) + "Z";
   }
 
+  static String formatTimeZoneToString(String timeZone) {
+    var inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
+    return formatDateToString(inputFormat.parse(timeZone));
+  }
+
   static DateTime formatTimeZoneToDate(String dateString) {
     var inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
     return inputFormat.parse(dateString);

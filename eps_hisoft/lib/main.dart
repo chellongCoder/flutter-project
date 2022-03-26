@@ -5,6 +5,7 @@ import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/provider/onsite.provider.dart';
 import 'package:eps_hisoft/provider/ot.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
+import 'package:eps_hisoft/screens/edit_profile.dart';
 import 'package:eps_hisoft/screens/home.dart';
 import 'package:eps_hisoft/screens/landing.dart';
 import 'package:eps_hisoft/screens/login.dart';
@@ -13,6 +14,7 @@ import 'package:eps_hisoft/screens/my_ot.dart';
 import 'package:eps_hisoft/screens/my_plan.dart';
 import 'package:eps_hisoft/screens/new_onsite.dart';
 import 'package:eps_hisoft/screens/new_ot.dart';
+import 'package:eps_hisoft/screens/user_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,6 +74,8 @@ class MyApp extends StatelessWidget {
           NewOTScreen.routeName: (ctx) => NewOTScreen(),
           MyOnsiteScreen.routeName: (ctx) => MyOnsiteScreen(),
           NewOnsiteScreen.routeName: (ctx) => NewOnsiteScreen(),
+          UserInfoScreen.routeName: (ctx) => UserInfoScreen(),
+          EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
         },
       ),
     );

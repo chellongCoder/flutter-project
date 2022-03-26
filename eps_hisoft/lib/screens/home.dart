@@ -6,9 +6,16 @@ import 'package:eps_hisoft/screens/login.dart';
 import 'package:eps_hisoft/screens/my_onsite.dart';
 import 'package:eps_hisoft/screens/my_ot.dart';
 import 'package:eps_hisoft/screens/my_plan.dart';
+import 'package:eps_hisoft/screens/user_info.dart';
+import 'package:eps_hisoft/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+
+enum FilterOptions {
+  User,
+  Logout,
+}
 
 class HomeScreen extends StatefulWidget {
   static final routeName = '/home';
@@ -50,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
               'Hủy',
               style: TextStyle(color: Colors.red),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           )
         ],
       ),
@@ -64,6 +73,29 @@ class _HomeScreenState extends State<HomeScreen> {
     getProjects();
   }
 
+  void _showPopupMenu(BuildContext context) async {
+    final mediaQuery = MediaQuery.of(context);
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(mediaQuery.size.width, 10, 10, 10),
+      items: [
+        PopupMenuItem<String>(
+          child: const Text('Thông tin cá nhân'),
+          value: 'Doge',
+          onTap: () => Future(
+            () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => UserInfoScreen()),
+            ),
+          ),
+        ),
+        PopupMenuItem<String>(child: const Text('Đăng xuất'), value: 'Lion'),
+      ],
+      elevation: 8.0,
+      useRootNavigator: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: true);
@@ -72,10 +104,37 @@ class _HomeScreenState extends State<HomeScreen> {
     final appBar = Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Home'),
-          )
+            trailing: GestureDetector(
+              child: Icon(Icons.more_vert),
+              onTap: () {
+                _showPopupMenu(context);
+              },
+            ))
         : AppBar(
             title: Text('Home'),
             centerTitle: true,
+            actions: <Widget>[
+              PopupMenuButton(
+                onSelected: (FilterOptions selectedValue) {
+                  if (selectedValue == FilterOptions.User) {
+                    Navigator.of(context).pushNamed(UserInfoScreen.routeName);
+                  } else {
+                    // productContainer.showAll();
+                  }
+                },
+                icon: Icon(Icons.more_vert),
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    child: Text('Thông tin người dùng'),
+                    value: FilterOptions.User,
+                  ),
+                  PopupMenuItem(
+                    child: Text('Đăng xuất'),
+                    value: FilterOptions.Logout,
+                  )
+                ],
+              )
+            ],
           );
     return Scaffold(
       appBar: appBar as PreferredSizeWidget,

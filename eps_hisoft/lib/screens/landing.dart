@@ -33,8 +33,11 @@ class _LandingState extends State<Landing> {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     final authToken = prefs.getString('authToken') ?? '';
+    final userId = prefs.getString('userId') ?? '';
     print('${authToken}');
     auth.setAuthToken = authToken;
+    auth.setUserId = userId;
+
     if (authToken == '') {
       Navigator.pushNamedAndRemoveUntil(
         context,
