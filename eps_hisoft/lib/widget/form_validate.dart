@@ -1,8 +1,11 @@
 import 'package:eps_hisoft/models/select_date.dart';
+import 'package:eps_hisoft/provider/api.provider.dart';
+import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/utils/app_log.dart';
 import 'package:eps_hisoft/widget/select_date.dart';
 import 'package:flutter/material.dart';
 import 'package:eps_hisoft/utils/helper.dart';
+import 'package:provider/provider.dart';
 
 class FormValidate extends StatefulWidget {
   final String email;
@@ -33,6 +36,47 @@ class _FormValidateState extends State<FormValidate> {
   late DateTime dob;
   String currentLocation = '';
   String homeTown = '';
+
+  void getUser() async {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    await auth.getUserApi(auth.getUserId ?? '', auth.authToken);
+  }
+
+  void _updateUser() async {
+    final authModel = Provider.of<AuthProvider>(context, listen: false);
+
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.
+      _formKey.currentState!.save();
+      final _dob = dateController.date ?? dob;
+      AppLog.d(email +
+          phone +
+          Helper.formatToDateTimeZone(_dob) +
+          currentLocation +
+          homeTown);
+
+      ApiResponse _apiResponse = await authModel.updateUser(
+          currentLocation,
+          Helper.formatToDateTimeZone(_dob),
+          homeTown,
+          email,
+          phone,
+          authModel.authToken);
+      if ((_apiResponse.ApiError as ApiError) == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Success'),
+          backgroundColor: Colors.green,
+        ));
+        getUser();
+      } else {
+        Helper.showError(context, (_apiResponse.ApiError as ApiError).error);
+      }
+    } else {
+      print('invalid');
+      setState(() => _autoValidate = AutovalidateMode.always);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +112,7 @@ class _FormValidateState extends State<FormValidate> {
               if (value == null || value.isEmpty) {
                 return 'Please enter some text';
               } else {
-                if (!value!.isValidEmail()) {
+                if (!value.isValidEmail()) {
                   return 'Check your email';
                 }
               }
@@ -171,26 +215,7 @@ class _FormValidateState extends State<FormValidate> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 10),
             child: ElevatedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  _formKey.currentState!.save();
-                  final dob = dateController.date;
-                  AppLog.d(email +
-                      phone +
-                      dob.toString() +
-                      currentLocation +
-                      homeTown);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                } else {
-                  print('invalid');
-                  setState(() => _autoValidate = AutovalidateMode.always);
-                }
-              },
+              onPressed: _updateUser,
               child: const Text('Save'),
             ),
           ),

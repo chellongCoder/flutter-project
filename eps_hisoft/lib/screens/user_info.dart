@@ -64,107 +64,31 @@ class _UserInfoState extends State<UserInfoScreen> {
                 Icon(Icons.arrow_drop_down, color: Colors.white),
               ],
             ),
-            children: [1, 2]
+            children: auth.getUserFunc.entries
                 .map(
                   (e) => AccordionSection(
                     scrollIntoViewOfItems: ScrollIntoViewOfItems.fast,
                     isOpen: true,
-                    header: Text('Thông tin cá nhân',
+                    header: Text(e.key,
                         style: TextStyle(color: Colors.white, fontSize: 17)),
-                    content: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text('Email: '),
-                            Text(
-                              auth.user?.email ?? '',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Số điện thoại: '),
-                            Text(
-                              auth.user?.phone ?? '',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Ngày sinh: '),
-                            Row(
-                              children: [
-                                Text(
-                                  auth.user?.dob != null
-                                      ? Helper.formatTimeZoneToString(
-                                              auth.user!.dob)
-                                          .toString()
-                                      : '',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Vai trò: '),
-                            Row(
-                              children: [
-                                Text(
-                                  auth.user?.position ?? '',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Ngày bắt đầu làm việc: '),
-                            Row(
-                              children: [
-                                Text(
-                                  auth.user?.startWorkAt != null
-                                      ? Helper.formatTimeZoneToString(
-                                              auth.user!.startWorkAt)
-                                          .toString()
-                                      : '',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Nơi ở hiện tại: '),
-                            Row(
-                              children: [
-                                Text(
-                                  (auth.user?.currentLocation).toString(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Quê quán: '),
-                            Row(
-                              children: [
-                                Text(
-                                  (auth.user?.hometown).toString(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
+                    content: ListView(
+                      shrinkWrap: true,
+                      children: e.value.map((entry) {
+                        return Column(
+                          children: entry.entries.map((entry) {
+                            var w = Row(children: [
+                              Text(
+                                '${entry.key}: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                entry.value.toString(),
+                              ),
+                            ]);
+                            return w;
+                          }).toList(),
+                        );
+                      }).toList(),
                     ),
                   ),
                 )

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:eps_hisoft/models/bank.dart';
 import 'package:flutter/foundation.dart';
 
 class User {
@@ -20,7 +21,7 @@ class User {
   final String slug;
   final String createdAt;
   final String updatedAt;
-  final List<dynamic> banksInfo;
+  final List<Bank> banksInfo;
   User({
     required this.id,
     required this.accessToken,
@@ -60,7 +61,7 @@ class User {
     String? slug,
     String? createdAt,
     String? updatedAt,
-    List<dynamic>? banksInfo,
+    List<Bank>? banksInfo,
   }) {
     return User(
       id: id ?? this.id,
@@ -126,7 +127,7 @@ class User {
       slug: map['slug'] ?? '',
       createdAt: map['createdAt'] ?? '',
       updatedAt: map['updatedAt'] ?? '',
-      banksInfo: List<dynamic>.from(map['banksInfo']),
+      banksInfo: List<Bank>.from(map['banksInfo']),
     );
   }
 
