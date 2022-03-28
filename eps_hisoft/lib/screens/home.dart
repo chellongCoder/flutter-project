@@ -109,30 +109,17 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 _showPopupMenu(context);
               },
-            ))
+            ),
+          )
         : AppBar(
             title: Text('Home'),
             centerTitle: true,
             actions: <Widget>[
-              PopupMenuButton(
-                onSelected: (FilterOptions selectedValue) {
-                  if (selectedValue == FilterOptions.User) {
-                    Navigator.of(context).pushNamed(UserInfoScreen.routeName);
-                  } else {
-                    // productContainer.showAll();
-                  }
+              GestureDetector(
+                child: Icon(Icons.more_vert),
+                onTap: () {
+                  _showPopupMenu(context);
                 },
-                icon: Icon(Icons.more_vert),
-                itemBuilder: (_) => [
-                  PopupMenuItem(
-                    child: Text('Thông tin người dùng'),
-                    value: FilterOptions.User,
-                  ),
-                  PopupMenuItem(
-                    child: Text('Đăng xuất'),
-                    value: FilterOptions.Logout,
-                  )
-                ],
               )
             ],
           );

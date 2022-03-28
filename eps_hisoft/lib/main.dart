@@ -61,6 +61,7 @@ class MyApp extends StatelessWidget {
           ).copyWith(
             secondary: Colors.grey,
             secondaryVariant: Colors.green,
+            surface: Colors.black54,
           ),
         ),
         initialRoute: Landing.routeName,

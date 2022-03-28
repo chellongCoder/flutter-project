@@ -97,9 +97,11 @@ class _UserInfoState extends State<UserInfoScreen> {
                             Row(
                               children: [
                                 Text(
-                                  Helper.formatTimeZoneToString(
-                                          auth.user?.dob ?? '')
-                                      .toString(),
+                                  auth.user?.dob != null
+                                      ? Helper.formatTimeZoneToString(
+                                              auth.user!.dob)
+                                          .toString()
+                                      : '',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -125,9 +127,11 @@ class _UserInfoState extends State<UserInfoScreen> {
                             Row(
                               children: [
                                 Text(
-                                  Helper.formatTimeZoneToString(
-                                          auth.user?.startWorkAt ?? '')
-                                      .toString(),
+                                  auth.user?.startWorkAt != null
+                                      ? Helper.formatTimeZoneToString(
+                                              auth.user!.startWorkAt)
+                                          .toString()
+                                      : '',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ],
