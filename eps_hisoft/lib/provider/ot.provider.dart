@@ -32,7 +32,7 @@ class OtProvider with ChangeNotifier {
       String from, String to, String bearerToken) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
-      final uri = Uri.parse('${ApiBase.baseUrl}/ot/search');
+      final uri = Uri.parse('${ApiBase.instance.baseUrl}/ot/search');
 
       var header = {
         'authorization': 'Bearer $bearerToken',
@@ -76,7 +76,7 @@ class OtProvider with ChangeNotifier {
       String note, String ship, String otDate, String bearerToken) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
-      final uri = Uri.parse('${ApiBase.baseUrl}/ot');
+      final uri = Uri.parse('${ApiBase.instance.baseUrl}/ot');
 
       var header = {
         'authorization': 'Bearer $bearerToken',

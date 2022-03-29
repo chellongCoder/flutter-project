@@ -104,7 +104,7 @@ class AuthProvider with ChangeNotifier {
     ApiResponse _apiResponse = ApiResponse();
 
     try {
-      var url = Uri.parse('${ApiBase.baseUrl}/login');
+      var url = Uri.parse('${ApiBase.instance.baseUrl}/login');
 
       final response = await http.post(url, body: {
         'email': username,
@@ -145,7 +145,8 @@ class AuthProvider with ChangeNotifier {
     ApiResponse _apiResponse = ApiResponse();
 
     try {
-      var url = Uri.parse('${ApiBase.baseUrl}/employees/detail/' + userId);
+      var url =
+          Uri.parse('${ApiBase.instance.baseUrl}/employees/detail/' + userId);
       var header = {
         'authorization': 'Bearer $bearerToken',
       };
@@ -190,7 +191,7 @@ class AuthProvider with ChangeNotifier {
     ApiResponse _apiResponse = ApiResponse();
 
     try {
-      var url = Uri.parse('${ApiBase.baseUrl}/employees/update');
+      var url = Uri.parse('${ApiBase.instance.baseUrl}/employees/update');
       var header = {
         'authorization': 'Bearer $bearerToken',
       };

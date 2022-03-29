@@ -1,7 +1,19 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiBase {
-  static final String baseUrl = "http://171.244.3.101:12003/api";
+  static ApiBase? _instance;
+  String baseUrl = "http://171.244.3.101:12003/api";
+
+  ApiBase._() {
+    String apiUrl = dotenv.get('CLIENT_URL');
+    print(apiUrl);
+    baseUrl = apiUrl;
+  }
+
+  static ApiBase get instance => _instance ??= ApiBase._();
 }
 
 class ApiResponse {

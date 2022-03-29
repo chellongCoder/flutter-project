@@ -14,7 +14,7 @@ class OnsiteProvider with ChangeNotifier {
       String from, String to, String bearerToken) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
-      final uri = Uri.parse('${ApiBase.baseUrl}/onsite/search');
+      final uri = Uri.parse('${ApiBase.instance.baseUrl}/onsite/search');
 
       var header = {
         'authorization': 'Bearer $bearerToken',
@@ -64,7 +64,7 @@ class OnsiteProvider with ChangeNotifier {
   ) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
-      final uri = Uri.parse('${ApiBase.baseUrl}/onsite');
+      final uri = Uri.parse('${ApiBase.instance.baseUrl}/onsite');
 
       var header = {
         'authorization': 'Bearer $bearerToken',

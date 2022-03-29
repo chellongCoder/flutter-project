@@ -12,7 +12,7 @@ class ProjectProvider with ChangeNotifier {
   Future<ApiResponse> getListProjects(String bearerToken) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
-      final uri = Uri.parse('${ApiBase.baseUrl}/projects');
+      final uri = Uri.parse('${ApiBase.instance.baseUrl}/projects');
 
       var header = {
         'authorization': 'Bearer $bearerToken',
