@@ -24,31 +24,39 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   void _handleSubmitted(BuildContext context) async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    AppLog.d(usernameController.text + " " + passwordController.text,
-        tag: "TEXT");
-    final username = usernameController.text;
-    final password = passwordController.text;
-    setState(() {
-      isLoading = true;
-    });
-    ApiResponse _apiResponse = await auth.authenticateUser(username, password);
-    print(_apiResponse.ApiError.toString());
-    if ((_apiResponse.ApiError as ApiError) == null) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomeScreen.routeName,
-        ModalRoute.withName(HomeScreen.routeName),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text((_apiResponse.ApiError as ApiError).error),
-        backgroundColor: Colors.red,
-      ));
+    try {
+      final auth = Provider.of<AuthProvider>(context, listen: false);
+      AppLog.d(usernameController.text + " " + passwordController.text,
+          tag: "TEXT");
+      final username = usernameController.text;
+      final password = passwordController.text;
+      setState(() {
+        isLoading = true;
+      });
+      ApiResponse _apiResponse =
+          await auth.authenticateUser(username, password);
+      print(_apiResponse.ApiError.toString());
+      if ((_apiResponse.ApiError as ApiError) == null) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          HomeScreen.routeName,
+          ModalRoute.withName(HomeScreen.routeName),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text((_apiResponse.ApiError as ApiError).error),
+          backgroundColor: Colors.red,
+        ));
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override

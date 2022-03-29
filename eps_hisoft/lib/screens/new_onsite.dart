@@ -85,6 +85,10 @@ class _NewOnsiteScreenState extends State<NewOnsiteScreen> {
       setState(() {
         isLoading = false;
       });
+      final String bearerToken = authModel.authToken;
+
+      await onsiteModel.getListOnsite(Helper.getDateStringFirstMonth(),
+          Helper.getDateStringLastMonth(), bearerToken);
     }
   }
 

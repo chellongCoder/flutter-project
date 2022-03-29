@@ -33,7 +33,6 @@ class MyPlanScreen extends StatefulWidget {
 
 class _MyPlanScreenState extends State<MyPlanScreen> {
   bool isShowDetail = false;
-  List<DateTime> ots = [];
   List<Widget> _children = [];
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
@@ -42,12 +41,6 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
 
     final projectModel = Provider.of<ProjectProvider>(context, listen: false);
-
-    print(ots.toString() +
-        " " +
-        ots.contains(time).toString() +
-        " " +
-        time.toString());
 
     List<OT> otWithTimes = otModel.ots.where((ot) {
       DateTime otTime = Helper.formatToDate(ot.from);
@@ -107,26 +100,6 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     });
   }
 
-  void getListOts() async {
-    final otModel = Provider.of<OtProvider>(context, listen: false);
-    final authModel = Provider.of<AuthProvider>(context, listen: false);
-    final String bearerToken = authModel.authToken;
-    AppLog.d(otModel.ots.toString(), tag: "GET LIST OT");
-    await otModel.getListOT(Helper.getDateStringFirstMonth(),
-        Helper.getDateStringLastMonth(), bearerToken);
-    AppLog.d(otModel.ots.toString(), tag: "GET LIST OT");
-
-    List<DateTime> _ots = otModel.ots
-        .map((e) => Helper.formatStringToDateNoHour(e.from))
-        .toList();
-
-    AppLog.d(_ots.toString(), tag: "LIST DATE OT");
-
-    setState(() {
-      ots = _ots;
-    });
-  }
-
   void getListOnsite() async {
     final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
     final authModel = Provider.of<AuthProvider>(context, listen: false);
@@ -152,13 +125,23 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     print(Helper.getDateStringWithDash(DateTime.now()));
     print(Helper.getDateStringFirstMonth());
     print(Helper.getDateStringLastMonth());
-    getListOts();
     getListOnsite();
   }
 
   @override
   Widget build(BuildContext context) {
-    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: false);
+    final otModel = Provider.of<OtProvider>(context, listen: true);
+    final onsiteModel = Provider.of<OnsiteProvider>(context, listen: true);
+    List<DateTime> _ots = otModel.ots
+        .map((e) => Helper.formatStringToDateNoHour(e.from))
+        .toList();
+    List<DateTime> _onsites = onsiteModel.onsites
+        .map((e) => Helper.formatStringToDateNoHour(e.from))
+        .toList();
+
+    final List<DateTime> _times = [..._ots, ..._onsites];
+
+    AppLog.d(_ots.toString(), tag: "LIST DATE OT");
 
     final appBar = Platform.isIOS
         ? CupertinoNavigationBar(
@@ -176,7 +159,7 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
           children: [
             MyCalendar(
               selectDate: selectDate,
-              ots: ots,
+              ots: _times,
             ),
             Divider(
               color: Colors.black45,

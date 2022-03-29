@@ -1,7 +1,9 @@
 import 'dart:convert';
 
-import 'package:eps_hisoft/models/bank.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:eps_hisoft/models/bank.dart';
 
 class User {
   final String id;
@@ -21,7 +23,7 @@ class User {
   final String slug;
   final String createdAt;
   final String updatedAt;
-  final List<Bank> banksInfo;
+  final List<Bank>? banksInfo;
   User({
     required this.id,
     required this.accessToken,
@@ -40,7 +42,7 @@ class User {
     required this.slug,
     required this.createdAt,
     required this.updatedAt,
-    required this.banksInfo,
+    this.banksInfo,
   });
 
   User copyWith({
@@ -104,14 +106,14 @@ class User {
       'slug': slug,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'banksInfo': banksInfo,
+      'banksInfo': [],
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] ?? '',
-      accessToken: map['accessToken'] ?? '',
+      id: map['_id'] ?? '',
+      accessToken: map['access_token'] ?? '',
       email: map['email'] ?? '',
       isReset: map['isReset'] ?? false,
       role: map['role'] ?? '',
@@ -127,7 +129,9 @@ class User {
       slug: map['slug'] ?? '',
       createdAt: map['createdAt'] ?? '',
       updatedAt: map['updatedAt'] ?? '',
-      banksInfo: List<Bank>.from(map['banksInfo']),
+      banksInfo: map['banksInfo'] != null
+          ? List<Bank>.from(map['banksInfo']?.map((x) => Bank.fromMap(x)))
+          : null,
     );
   }
 
@@ -143,6 +147,7 @@ class User {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
 
     return other is User &&
         other.id == id &&

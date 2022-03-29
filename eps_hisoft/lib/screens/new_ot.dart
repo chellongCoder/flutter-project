@@ -103,6 +103,11 @@ class _NewOTScreenState extends State<NewOTScreen> {
       setState(() {
         isLoading = false;
       });
+      await otModel.getListOT(
+        Helper.getDateStringFirstMonth(),
+        Helper.getDateStringLastMonth(),
+        authModel.authToken,
+      );
     }
   }
 

@@ -60,7 +60,7 @@ class AuthProvider with ChangeNotifier {
       }
     ];
 
-    _userFunc['Thông tin ngân hàng'] = user.banksInfo
+    _userFunc['Thông tin ngân hàng'] = user.banksInfo!
         .map((bank) => {
               'Tên': bank.name,
               'Chi nhánh': bank.branch,
