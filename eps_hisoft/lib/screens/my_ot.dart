@@ -89,127 +89,123 @@ class _MyOtScreenState extends State<MyOtScreen> {
 
     return Scaffold(
       appBar: appBar as PreferredSizeWidget,
-      body: Center(
-        child: ListView(
-          shrinkWrap: true, //just set this property
+      body: ListView(
+        shrinkWrap: true, //just set this property
 
-          children: [
-            Text('Thời gian', style: Theme.of(context).textTheme.headline5),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SelectDate(
-                  width: 150,
-                  date: DateTime(DateTime.now().year, DateTime.now().month, 1),
-                  controller: fromDateController,
-                ),
-                Icon(
-                  Icons.arrow_right_alt,
-                  color: Theme.of(context).primaryColor,
-                ),
-                SelectDate(
-                  width: 150,
-                  date: DateTime(
-                      DateTime.now().year, DateTime.now().month + 1, 0),
-                  controller: toDateController,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              child: Platform.isIOS
-                  ? CupertinoButton.filled(
-                      onPressed: onSearch,
-                      child: const Text('Search'),
-                    )
-                  : RaisedButton(
-                      onPressed: onSearch,
-                      child: Text('Search'),
-                      textColor: Colors.white,
-                      color: Theme.of(context).primaryColor,
-                      padding: EdgeInsets.all(20),
-                    ),
-            ),
-            Accordion(
-              disableScrolling: true,
-              maxOpenSections: 2,
-              leftIcon: Icon(Icons.timelapse, color: Colors.white),
-              children: otModel.ots
-                  .map(
-                    (OT e) => AccordionSection(
-                      isOpen: true,
-                      header: Text(e.from,
-                          style: TextStyle(color: Colors.white, fontSize: 17)),
-                      content: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text('Dự án: '),
-                              Text(
-                                projectModel.projects
-                                    .firstWhere(
-                                        (element) => element.id == e.project)
-                                    .name,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text('Ca: '),
-                              Text(
-                                e.ship,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text('Thời gian: '),
-                              Row(
-                                children: [
-                                  Text(
-                                    e.from,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Icon(Icons.arrow_right_alt),
-                                  Text(
-                                    e.to,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text('Ghi chú: '),
-                              Flexible(
-                                  child: Text(
-                                '${e.note}',
-                                maxLines: 3,
-                                style: Theme.of(context).textTheme.overline,
-                              )),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+        children: [
+          Text('Thời gian', style: Theme.of(context).textTheme.headline5),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SelectDate(
+                width: 150,
+                date: DateTime(DateTime.now().year, DateTime.now().month, 1),
+                controller: fromDateController,
+              ),
+              Icon(
+                Icons.arrow_right_alt,
+                color: Theme.of(context).primaryColor,
+              ),
+              SelectDate(
+                width: 150,
+                date:
+                    DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+                controller: toDateController,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Platform.isIOS
+                ? CupertinoButton.filled(
+                    onPressed: onSearch,
+                    child: const Text('Search'),
                   )
-                  .toList(),
-            ),
-          ],
-        ),
+                : RaisedButton(
+                    onPressed: onSearch,
+                    child: Text('Search'),
+                    textColor: Colors.white,
+                    color: Theme.of(context).primaryColor,
+                    padding: EdgeInsets.all(20),
+                  ),
+          ),
+          Accordion(
+            disableScrolling: true,
+            maxOpenSections: 2,
+            leftIcon: Icon(Icons.timelapse, color: Colors.white),
+            children: otModel.ots
+                .map(
+                  (OT e) => AccordionSection(
+                    isOpen: true,
+                    header: Text(e.from,
+                        style: TextStyle(color: Colors.white, fontSize: 17)),
+                    content: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text('Dự án: '),
+                            Text(
+                              projectModel.projects
+                                  .firstWhere(
+                                      (element) => element.id == e.project)
+                                  .name,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text('Ca: '),
+                            Text(
+                              e.ship,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text('Thời gian: '),
+                            Row(
+                              children: [
+                                Text(
+                                  e.from,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Icon(Icons.arrow_right_alt),
+                                Text(
+                                  e.to,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Ghi chú: '),
+                            Flexible(
+                                child: Text(
+                              '${e.note}',
+                              maxLines: 3,
+                              style: Theme.of(context).textTheme.overline,
+                            )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
       ),
     );
   }

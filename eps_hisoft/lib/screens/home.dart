@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
+import 'package:eps_hisoft/screens/change_password.dart';
 import 'package:eps_hisoft/screens/login.dart';
 import 'package:eps_hisoft/screens/my_onsite.dart';
 import 'package:eps_hisoft/screens/my_ot.dart';
@@ -86,6 +87,15 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () => Future(
             () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => UserInfoScreen()),
+            ),
+          ),
+        ),
+        PopupMenuItem<String>(
+          child: const Text('Đổi mật khẩu'),
+          value: 'Doge',
+          onTap: () => Future(
+            () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => ChangePasswordScreen()),
             ),
           ),
         ),

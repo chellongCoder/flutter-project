@@ -229,4 +229,50 @@ class AuthProvider with ChangeNotifier {
     }
     return _apiResponse;
   }
+
+  Future<ApiResponse> changePassword(
+    String email,
+    String newPassword,
+    String oldPassword,
+    String bearerToken,
+  ) async {
+    ApiResponse _apiResponse = ApiResponse();
+
+    try {
+      var url = Uri.parse('${ApiBase.instance.baseUrl}/change-password');
+      var header = {
+        'authorization': 'Bearer $bearerToken',
+      };
+      final response = await http.post(
+        url,
+        body: {
+          'email': email,
+          'newPassword': newPassword,
+          'oldPassword': oldPassword,
+        },
+        headers: header,
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          Map<String, dynamic> jsonDecode = json.decode(response.body);
+          int status = jsonDecode['status'];
+          if (status == 200) {
+            notifyListeners();
+          } else {
+            _apiResponse.ApiError = ApiError(error: jsonDecode['message']);
+          }
+          break;
+        case 401:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+        default:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+      }
+    } on SocketException {
+      _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
+    }
+    return _apiResponse;
+  }
 }

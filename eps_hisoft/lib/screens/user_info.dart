@@ -40,7 +40,7 @@ class _UserInfoState extends State<UserInfoScreen> {
             width: 100,
             child: CircleAvatar(
               child: Text(
-                'L',
+                auth.user?.name.substring(0, 1).toString() ?? '',
                 style: (Theme.of(context).textTheme.headline3)!
                     .merge(TextStyle(color: Colors.white)),
               ),

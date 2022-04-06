@@ -5,6 +5,7 @@ import 'package:eps_hisoft/provider/auth.provider.dart';
 import 'package:eps_hisoft/provider/onsite.provider.dart';
 import 'package:eps_hisoft/provider/ot.provider.dart';
 import 'package:eps_hisoft/provider/project.provider.dart';
+import 'package:eps_hisoft/screens/change_password.dart';
 import 'package:eps_hisoft/screens/edit_profile.dart';
 import 'package:eps_hisoft/screens/home.dart';
 import 'package:eps_hisoft/screens/landing.dart';
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
           NewOnsiteScreen.routeName: (ctx) => NewOnsiteScreen(),
           UserInfoScreen.routeName: (ctx) => UserInfoScreen(),
           EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
+          ChangePasswordScreen.routeName: (ctx) => ChangePasswordScreen(),
         },
       ),
     );
