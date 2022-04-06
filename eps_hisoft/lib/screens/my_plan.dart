@@ -109,6 +109,15 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
         Helper.getDateStringLastMonth(), bearerToken);
   }
 
+  void getListOT() async {
+    final otModel = Provider.of<OtProvider>(context, listen: false);
+    final authModel = Provider.of<AuthProvider>(context, listen: false);
+    final String bearerToken = authModel.authToken;
+
+    await otModel.getListOT(Helper.getDateStringFirstMonth(),
+        Helper.getDateStringLastMonth(), bearerToken);
+  }
+
   void addNewOt() {
     Navigator.of(context).pushNamed(NewOTScreen.routeName);
   }
@@ -126,6 +135,7 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
     print(Helper.getDateStringFirstMonth());
     print(Helper.getDateStringLastMonth());
     getListOnsite();
+    getListOT();
   }
 
   @override
