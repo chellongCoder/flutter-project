@@ -19,15 +19,12 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).pushNamed(
-            ProductDetailScreen.routeName,
-            arguments: product.id,
-          );
-        },
+    return InkWell(
+      onTap: () {
+        print('object');
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
         child: GridTile(
           child: Image.network(product.imageUrl, fit: BoxFit.cover),
           footer: GridTileBar(
@@ -36,6 +33,7 @@ class ProductItem extends StatelessWidget {
                   product.isFavorites ? Icons.favorite : Icons.favorite_border,
                   color: Theme.of(context).accentColor),
               onPressed: () {
+                print('object');
                 product.toggleFavoritesStatus();
               },
             ),

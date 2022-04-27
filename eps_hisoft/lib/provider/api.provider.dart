@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiBase {
   static ApiBase? _instance;
-  String baseUrl = "http://171.244.3.101:12003/api";
+  String baseUrl = "";
 
   ApiBase._() {
     String apiUrl = dotenv.get('CLIENT_URL');

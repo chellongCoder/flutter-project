@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/providers/products.dart';
 import 'package:shop_app/screens/cart_screen.dart';
 import 'package:shop_app/screens/product_detail.dart';
@@ -20,11 +21,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         // cung cấp provider cần lấy ra thông tin tinn, giống kiểu store
         providers: [
-          ChangeNotifierProvider.value(
-            value: Products(),
+          ChangeNotifierProvider(
+            create: (ctx) => Products(),
           ),
-          ChangeNotifierProvider.value(
-            value: Cart(),
+          ChangeNotifierProvider(
+            create: (ctx) => Cart(),
+          ),
+          ChangeNotifierProvider(
+            create: (ctx) => Orders(),
           ),
         ],
         child: MaterialApp(

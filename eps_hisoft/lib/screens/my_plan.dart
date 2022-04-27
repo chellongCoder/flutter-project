@@ -203,12 +203,6 @@ class _MyPlanScreenState extends State<MyPlanScreen> {
             label: 'Onsite',
             onTap: addNewOnsite,
           ),
-          // SpeedDialChild(
-          //     child: Icon(Icons.copy),
-          //     label: 'Copy',
-          //     onTap: () {
-          //       print('Copy Tapped');
-          //     }),
         ],
       ),
     );
